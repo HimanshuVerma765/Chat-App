@@ -38,7 +38,7 @@ export const getMessages = async (req, res) => {
     const { id: selectedUserId } = req.params;
     const myId = req.user._id;
 
-    const messages = await Messages.find({
+    const messages = await Message.find({
       $or: [
         { senderId: myId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: myId },
@@ -74,38 +74,40 @@ export const markMessageAsSeen = async (req, res) => {
   }
 };
 
-
 // Send message to selected user
-export const sendMessage = async (req,res) => {
+export const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
     const receiverId = req.params.id;
     const senderId = req.user._id;
 
     let imageUrl;
-    if(image){
-     const uploadResponse = await cloudinary.uploader.upload(image);
-     imageUrl = uploadResponse.secure_url;
+    if (image) {
+      const uploadResponse = await cloudinary.uploader.upload(image);
+      imageUrl = uploadResponse.secure_url;
     }
 
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
-      image: imageUrl
-    })
+      image: imageUrl,
+    });
+
+    // Save the message to the database
+    const savedMessage = await newMessage.save();
 
     // Emit the new message to the receiver's socket
     const receiverSocketId = userSocketMap[receiverId];
-    if(receiverSocketId) io.to(receiverSocketId).emit("newMessage", newMessage);
+    if (receiverSocketId)
+      io.to(receiverSocketId).emit("newMessage", savedMessage);
 
     res.json({
-      success:true,
-      newMessage
-    })
-    
+      success: true,
+      newMessage: savedMessage,
+    });
   } catch (error) {
-        console.log(error.message);
+    console.log(error.message);
     res.json({ success: false, message: error.message });
   }
-}
+};
