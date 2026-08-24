@@ -1,5 +1,5 @@
-import  jwt  from "jsonwebtoken";
-import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+import User from "../../models/User.js";
 
 // Middleware to protect route
 export const protectRoute = async (req, res, next) => {
