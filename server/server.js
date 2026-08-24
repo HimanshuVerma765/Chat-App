@@ -36,6 +36,10 @@ io.on("connection", (socket) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Server is Live!");
+});
+
 // Middleware Setup
 app.use(express.json({ limit: "5mb" }));
 app.use(cors());
@@ -46,6 +50,8 @@ app.use("/api/status", (req, res) => {
 });
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
+
+
 
 // Connect to DB
 await connectDB();
