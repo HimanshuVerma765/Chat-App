@@ -20,5 +20,5 @@
   </g>
 
   <!-- Updated Typography Placement: Bottom Center -->
-  <text x="305" y="400" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="70" fill="#231B54" letter-spacing="3">ORION</text>
+  <text x="305" y="400" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="70" fill="#f1f0f6" letter-spacing="3">ORION</text>
 </svg>

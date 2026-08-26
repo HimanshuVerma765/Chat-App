@@ -12,7 +12,7 @@ const messageSChema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    text: {
+    encryptedText: {
       type: String,
     },
     image: {
@@ -23,7 +23,7 @@ const messageSChema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Message = mongoose.model("Message", messageSChema);

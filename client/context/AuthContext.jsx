@@ -11,6 +11,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [authUser, setAuthUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
 
@@ -28,6 +29,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
@@ -92,15 +95,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["token"] = token;
+    if (!token) {
+      setIsAuthLoading(false);
+      return;
     }
+
+    axios.defaults.headers.common["token"] = token;
     checkAuth();
   }, []);
 
   const value = {
     axios,
     authUser,
+    isAuthLoading,
     onlineUsers,
     socket,
     login,

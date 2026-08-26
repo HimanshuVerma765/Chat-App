@@ -2,13 +2,14 @@ import cloudinary from "../lib/cloudinary.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import { io, userSocketMap } from "../server.js";
+import { encryptMessage, toClientMessage } from "../lib/messageEncryption.js";
 
 // Get all users except the logged in user
 export const getUsersForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
     const filteredUsers = await User.find({ _id: { $ne: userId } }).select(
-      "-password"
+      "-password",
     );
 
     // Count no. of msgs not seen
@@ -47,12 +48,12 @@ export const getMessages = async (req, res) => {
 
     await Message.updateMany(
       { senderId: selectedUserId, receiverId: myId },
-      { seen: true }
+      { seen: true },
     );
 
     res.json({
       success: true,
-      messages,
+      messages: messages.map(toClientMessage),
     });
   } catch (error) {
     console.log(error.message);
@@ -90,21 +91,22 @@ export const sendMessage = async (req, res) => {
     const newMessage = new Message({
       senderId,
       receiverId,
-      text,
+      encryptedText: encryptMessage(text),
       image: imageUrl,
     });
 
     // Save the message to the database
     const savedMessage = await newMessage.save();
+    const clientMessage = toClientMessage(savedMessage);
 
     // Emit the new message to the receiver's socket
     const receiverSocketId = userSocketMap[receiverId];
     if (receiverSocketId)
-      io.to(receiverSocketId).emit("newMessage", savedMessage);
+      io.to(receiverSocketId).emit("newMessage", clientMessage);
 
     res.json({
       success: true,
-      newMessage: savedMessage,
+      newMessage: clientMessage,
     });
   } catch (error) {
     console.log(error.message);

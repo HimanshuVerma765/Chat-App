@@ -6,7 +6,10 @@ import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
 const App = () => {
-  const { authUser } = useContext(AuthContext);
+  const { authUser, isAuthLoading } = useContext(AuthContext);
+
+  if (isAuthLoading) return null;
+
   return (
     <div className="bg-[url('/image.png')] bg-current h-screen bg-cover">
       <Toaster />
