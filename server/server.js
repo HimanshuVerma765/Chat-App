@@ -51,14 +51,12 @@ app.use("/api/status", (req, res) => {
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
-
-
 // Connect to DB
 await connectDB();
 
 // Starting the server
 if (process.env.NODE_ENV !== "production") {
-  const Port = process.env.port || 5000;
+  const Port = process.env.PORT || 5000;
   server.listen(Port, () => {
     console.log("Server is running on Port : " + Port);
   });
