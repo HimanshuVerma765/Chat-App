@@ -71,7 +71,6 @@ const ChatContainer = () => {
           alt=""
           className="md:hidden max-w-7"
         />
-        <img src={assets.help_icon} alt="" className="max-md:hidden max-w-5" />
       </div>
 
       {/* Chat Part */}
